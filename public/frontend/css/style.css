@@ -1,0 +1,1139 @@
+    :root {
+      --primary: #075b8f;
+      --primary-2: #0b79b7;
+      --navy: #073b5c;
+      --accent: #19a7ce;
+      --green: #0b7655;
+      --orange: #f7941d;
+      --text: #173042;
+      --muted: #667b8a;
+      --bg: #f6fbff;
+      --surface: #ffffff;
+      --surface-2: #eef7fc;
+      --border: rgba(7, 91, 143, .12);
+      --shadow: 0 18px 55px rgba(7, 59, 92, .11);
+      --radius: 22px;
+    }
+
+    [data-theme="dark"] {
+      --text: #e8f4fb;
+      --muted: #a8bdc9;
+      --bg: #081923;
+      --surface: #0d2533;
+      --surface-2: #102f40;
+      --border: rgba(255, 255, 255, .10);
+      --shadow: 0 18px 55px rgba(0, 0, 0, .30);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 85px;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Hind Siliguri", sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      overflow-x: hidden;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5 {
+      font-family: "Noto Serif Bengali", serif;
+    }
+
+    a {
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .topbar {
+      background: var(--navy);
+      color: #fff;
+      font-size: .92rem;
+    }
+
+    .topbar a {
+      color: #fff;
+      opacity: .92;
+    }
+
+    .navbar {
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      transition: .3s;
+    }
+
+    .navbar.scrolled {
+      box-shadow: 0 8px 30px rgba(7, 59, 92, .08);
+    }
+
+    .brand-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--primary), var(--accent));
+      color: #fff;
+      font-size: 1.35rem;
+      align-content: end;
+      box-shadow: 0 8px 22px rgba(7, 91, 143, .25);
+    }
+
+    .brand-title {
+      line-height: 1.05;
+    }
+
+    .brand-title strong {
+      display: block;
+      color: var(--primary);
+      font-size: 1.05rem;
+    }
+
+    .brand-title small {
+      color: var(--muted);
+    }
+
+    .nav-link {
+      color: var(--text) !important;
+      font-weight: 600;
+      margin: 0 2px;
+      border-radius: 10px;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--primary) !important;
+      background: var(--surface-2);
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .btn-primary-custom {
+      border: 0;
+      color: #fff;
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      box-shadow: 0 12px 28px rgba(7, 91, 143, .22);
+      border-radius: 12px;
+      padding: .78rem 1.1rem;
+      font-weight: 700;
+    }
+
+    .btn-primary-custom:hover {
+      transform: translateY(-2px);
+      color: #fff;
+    }
+
+    .btn-outline-custom {
+      border: 1px solid var(--primary);
+      color: var(--primary);
+      border-radius: 12px;
+      padding: .72rem 1.05rem;
+      font-weight: 700;
+    }
+
+    .btn-outline-custom:hover {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .hero {
+      position: relative;
+      min-height: calc(100vh - 115px);
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 10% 15%, rgba(25, 167, 206, .13), transparent 30%),
+        radial-gradient(circle at 90% 80%, rgba(7, 91, 143, .12), transparent 32%),
+        var(--bg);
+    }
+
+    .hero:before,
+    .hero:after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(2px);
+      pointer-events: none;
+    }
+
+    .hero:before {
+      width: 420px;
+      height: 420px;
+      right: -170px;
+      top: -120px;
+      background: rgba(25, 167, 206, .10);
+    }
+
+    .hero:after {
+      width: 300px;
+      height: 300px;
+      left: -160px;
+      bottom: -120px;
+      background: rgba(7, 91, 143, .08);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      color: var(--primary);
+      font-weight: 700;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: .45rem .75rem;
+      border-radius: 999px;
+      box-shadow: 0 8px 22px rgba(7, 59, 92, .06);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 4vw, 5.3rem);
+      line-height: 1.1;
+      margin: 1.15rem 0;
+      color: var(--navy);
+    }
+
+    [data-theme="dark"] .hero h1 {
+      color: #eaf8ff;
+    }
+
+    .hero h1 span {
+      color: var(--primary-2);
+    }
+
+    .hero-lead {
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: var(--muted);
+      max-width: 680px;
+    }
+
+    .hero-card {
+      position: relative;
+      border-radius: 32px;
+    }
+
+    [data-theme="dark"] .hero-card {
+      background: linear-gradient(145deg, #123344, #0c2431);
+    }
+
+    .doctor-img {
+      width: 100%;
+      height: min(68vh, 650px);
+      object-fit: cover;
+      object-position: center top;
+      border-radius: 24px;
+    }
+
+    .floating-badge {
+      position: absolute;
+      left: -30px;
+      bottom: 45px;
+      background: var(--surface);
+      padding: 16px 18px;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      max-width: 230px;
+    }
+
+    .floating-badge strong {
+      display: block;
+      color: var(--primary);
+      font-size: 1.35rem;
+    }
+
+    .stats {
+      margin-top: -45px;
+      position: relative;
+      z-index: 4;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      height: 100%;
+    }
+
+    .stat-card i {
+      color: var(--primary);
+      font-size: 1.6rem;
+    }
+
+    .counter {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--navy);
+    }
+
+    [data-theme="dark"] .counter {
+      color: #eaf8ff;
+    }
+
+    .section {
+      padding: 100px 0;
+    }
+
+    .section-soft {
+      background: var(--surface-2);
+    }
+
+    .section-head {
+      max-width: 760px;
+      margin: 0 auto 48px;
+      text-align: center;
+    }
+
+    .section-kicker {
+      color: var(--primary);
+      font-weight: 800;
+      letter-spacing: .5px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      margin: .45rem 0 1rem;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.8;
+    }
+
+    .about-card,
+    .service-card,
+    .condition-card,
+    .timeline-card,
+    .testimonial-card,
+    .contact-card,
+    .faq-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 35px rgba(7, 59, 92, .06);
+    }
+
+    .about-card {
+      padding: 32px;
+    }
+
+    .check-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .check-list li {
+      margin: 12px 0;
+      color: var(--muted);
+    }
+
+    .check-list i {
+      color: #0a9a70;
+      margin-right: 8px;
+    }
+
+    .service-card {
+      padding: 28px;
+      height: 100%;
+      transition: .35s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card:before {
+      content: "";
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: rgba(25, 167, 206, .09);
+      right: -25px;
+      top: -25px;
+    }
+
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow);
+    }
+
+    .service-icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 16px;
+      background: var(--surface-2);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 1.55rem;
+      margin-bottom: 18px;
+    }
+
+    .service-card p {
+      color: var(--muted);
+      line-height: 1.75;
+    }
+
+    .filter-wrap {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-bottom: 28px;
+    }
+
+    .filter-btn {
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      padding: .6rem .95rem;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .condition-card {
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .condition-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--orange);
+      flex: 0 0 auto;
+    }
+
+    .condition-card span {
+      color: var(--text);
+    }
+
+    .timeline {
+      position: relative;
+    }
+
+    .timeline:before {
+      content: "";
+      position: absolute;
+      left: 20px;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: rgba(7, 91, 143, .15);
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 60px;
+      margin-bottom: 28px;
+    }
+
+    .timeline-dot {
+      position: absolute;
+      left: 9px;
+      top: 5px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--surface);
+      border: 6px solid var(--primary);
+    }
+
+    .timeline-card {
+      padding: 24px;
+    }
+
+    .timeline-card small {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .appointment {
+      background: linear-gradient(135deg, #064e7d, #0a86bb);
+      color: #fff;
+      border-radius: 30px;
+      padding: 50px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .appointment:after {
+      content: "";
+      position: absolute;
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .08);
+      right: -100px;
+      top: -110px;
+    }
+
+    .appointment p {
+      color: rgba(255, 255, 255, .82);
+    }
+
+    .testimonial-card {
+      padding: 28px;
+      height: 100%;
+    }
+
+    .stars {
+      color: #f5a623;
+      letter-spacing: 2px;
+    }
+
+    .quote {
+      font-size: 1.05rem;
+      line-height: 1.85;
+      color: var(--muted);
+    }
+
+    .faq-card {
+      overflow: hidden;
+    }
+
+    .accordion-item {
+      background: transparent;
+      border: 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .accordion-button {
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 700;
+      box-shadow: none !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+      color: var(--primary);
+      background: var(--surface-2);
+    }
+
+    .accordion-body {
+      color: var(--muted);
+      line-height: 1.8;
+    }
+
+    .contact-card {
+      padding: 26px;
+      height: 100%;
+    }
+
+    .contact-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: var(--surface-2);
+      color: var(--primary);
+      display: grid;
+      place-items: center;
+      font-size: 1.35rem;
+    }
+
+    .form-control,
+    .form-select {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: .8rem .9rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 .2rem rgba(7, 91, 143, .10);
+    }
+
+    footer {
+      background: #062c43;
+      color: #d7e8f0;
+    }
+
+    footer a {
+      color: #d7e8f0;
+    }
+
+    .footer-title {
+      color: #fff;
+      font-weight: 800;
+      margin-bottom: 16px;
+    }
+
+    .social {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, .15);
+      display: grid;
+      place-items: center;
+      color: #fff;
+    }
+
+    .social:hover {
+      background: rgba(255, 255, 255, .12);
+      color: #fff;
+    }
+
+    #backToTop {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1000;
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 50%;
+      display: grid;
+      align-content: center;
+      background: var(--primary);
+      color: #fff;
+      display: none;
+      box-shadow: var(--shadow);
+    }
+
+    .toast-wrap {
+      position: fixed;
+      right: 20px;
+      top: 90px;
+      z-index: 2000;
+    }
+
+    .toast-custom {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      border-radius: 14px;
+      padding: 14px 18px;
+      display: none;
+    }
+
+    @media (max-width: 991px) {
+      .hero {
+        padding: 70px 0 90px;
+      }
+
+      .doctor-img {
+        height: 520px;
+      }
+
+      .floating-badge {
+        left: 15px;
+        bottom: 20px;
+      }
+
+      .stats {
+        margin-top: -25px;
+      }
+    }
+
+    @media (max-width: 575px) {
+      .topbar .hide-mobile {
+        display: none;
+      }
+
+      .hero h1 {
+        font-size: 2.55rem;
+      }
+
+      .section {
+        padding: 72px 0;
+      }
+
+      .doctor-img {
+        height: 420px;
+      }
+
+      .appointment {
+        padding: 30px 22px;
+      }
+    }
+
+    .tagline {
+      font-size: .60em;
+    }
+
+    /* =========================================================
+   APPOINTMENT HOSPITAL LIST
+========================================================= */
+
+    .appointment-hospital-list {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .appointment-hospital {
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.20);
+      background: rgba(255, 255, 255, 0.10);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 16px;
+      padding: 16px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-align: left;
+      color: #fff;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .appointment-hospital:hover {
+      transform: translateY(-3px);
+      background: rgba(255, 255, 255, 0.17);
+      border-color: rgba(255, 255, 255, 0.40);
+    }
+
+    .hospital-icon {
+      width: 48px;
+      height: 48px;
+      min-width: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.16);
+      font-size: 22px;
+    }
+
+    .hospital-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .hospital-info small {
+      display: block;
+      font-size: 12px;
+      opacity: 0.75;
+      margin-bottom: 3px;
+    }
+
+    .hospital-info h5 {
+      margin: 0 0 4px;
+      font-size: 16px;
+      font-weight: 600;
+    }
+
+    .hospital-info span {
+      display: block;
+      font-size: 12px;
+      opacity: 0.75;
+    }
+
+    .hospital-arrow {
+      width: 34px;
+      height: 34px;
+      min-width: 34px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.13);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+
+    /* =========================================================
+   APPOINTMENT MODAL
+========================================================= */
+
+    .appointment-modal .modal-content {
+      border: 0;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+    }
+
+    .appointment-modal .modal-header {
+      padding: 24px 28px;
+      border-bottom: 1px solid #edf0f5;
+      background: #f8fafc;
+    }
+
+    .modal-kicker {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--bs-primary);
+    }
+
+    .appointment-modal .modal-title {
+      font-weight: 700;
+      color: #172033;
+    }
+
+    .appointment-modal .modal-body {
+      padding: 28px;
+    }
+
+
+    /* Main hospital information */
+
+    .appointment-detail-card {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 18px;
+      border-radius: 18px;
+      background: #f5f8fc;
+      border: 1px solid #e9edf4;
+    }
+
+    .appointment-detail-icon {
+      width: 55px;
+      height: 55px;
+      min-width: 55px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(var(--bs-primary-rgb), 0.10);
+      color: var(--bs-primary);
+      font-size: 25px;
+    }
+
+    .appointment-detail-card h5 {
+      margin-bottom: 5px;
+      font-weight: 700;
+      color: #172033;
+    }
+
+
+    /* Information Grid */
+
+    .appointment-info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-top: 20px;
+    }
+
+    .appointment-info {
+      display: flex;
+      align-items: flex-start;
+      gap: 13px;
+      padding: 17px;
+      border: 1px solid #edf0f5;
+      border-radius: 16px;
+      background: #fff;
+    }
+
+    .appointment-info>i {
+      color: var(--bs-primary);
+      font-size: 20px;
+      margin-top: 2px;
+    }
+
+    .appointment-info div {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .appointment-info small {
+      color: #7a8496;
+      font-size: 11px;
+      font-weight: 600;
+    }
+
+    .appointment-info strong {
+      color: #20293a;
+      font-size: 14px;
+    }
+
+    .appointment-info span {
+      color: #70798a;
+      font-size: 13px;
+    }
+
+    .appointment-info a {
+      color: var(--bs-primary);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .appointment-info a:hover {
+      text-decoration: underline;
+    }
+
+
+    /* Modal Footer */
+
+    .appointment-modal .modal-footer {
+      padding: 18px 28px;
+      border-top: 1px solid #edf0f5;
+      background: #fafbfd;
+    }
+
+    .appointment-modal .btn {
+      border-radius: 10px;
+      padding: 10px 18px;
+      font-weight: 600;
+    }
+
+
+    /* =========================================================
+   MOBILE RESPONSIVE
+========================================================= */
+
+    @media (max-width: 767px) {
+
+      .appointment-info-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .appointment-modal .modal-header,
+      .appointment-modal .modal-body {
+        padding: 20px;
+      }
+
+      .appointment-modal .modal-footer {
+        padding: 15px 20px;
+      }
+
+      .appointment-hospital {
+        padding: 14px;
+      }
+
+      .hospital-info h5 {
+        font-size: 14px;
+      }
+
+      .hospital-info span {
+        font-size: 11px;
+      }
+
+      .appointment-detail-card {
+        align-items: flex-start;
+      }
+
+    }
+
+    /* =========================================================
+   MOBILE ONLY — FIXED APPOINTMENT BUTTON
+========================================================= */
+
+    .mobile-appointment-btn {
+      display: none;
+    }
+
+    @media (max-width: 767.98px) {
+
+      .mobile-appointment-btn {
+        position: fixed;
+        left: 0;
+        bottom: 40%;
+
+        z-index: 9999;
+
+        width: 45px;
+        height: 125px;
+
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: center;
+        justify-content: flex-start;
+
+        gap: 8px;
+
+        padding: 10px 6px;
+
+        background: #0d6efd;
+        color: #fff;
+
+        text-decoration: none;
+
+        border-radius: 0 25px 25px 0;
+
+        font-size: 12px;
+        font-weight: 700;
+
+        box-shadow:
+          0 5px 18px rgba(13, 110, 253, 0.35),
+          0 0 0 0 rgba(13, 110, 253, 0.45);
+
+        animation: appointmentPulse 1.8s infinite;
+
+        transition: all 0.3s ease;
+      }
+
+
+      /* =====================================================
+     ICON — TOP
+  ===================================================== */
+
+      .mobile-appointment-btn i {
+        width: 25px;
+        height: 25px;
+
+        flex-shrink: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        background: rgba(255, 255, 255, 0.18);
+
+        border-radius: 50%;
+
+        font-size: 10px;
+      }
+
+
+      /* =====================================================
+     TEXT — BOTTOM TO TOP
+  ===================================================== */
+
+      .mobile-appointment-btn span {
+
+        writing-mode: vertical-rl;
+
+        transform: rotate(180deg);
+
+        white-space: nowrap;
+
+        line-height: 1;
+
+        display: block;
+      }
+
+
+      .mobile-appointment-btn:active {
+        transform: scale(0.95);
+      }
+
+    }
+
+
+    /* =========================================================
+   HIGHLIGHT / BLINK ANIMATION
+========================================================= */
+
+    @keyframes appointmentPulse {
+
+      0% {
+        box-shadow:
+          0 5px 18px rgba(13, 110, 253, 0.35),
+          0 0 0 0 rgba(13, 110, 253, 0.45);
+      }
+
+      50% {
+        box-shadow:
+          0 5px 20px rgba(13, 110, 253, 0.45),
+          0 0 0 8px rgba(13, 110, 253, 0.08);
+      }
+
+      100% {
+        box-shadow:
+          0 5px 18px rgba(13, 110, 253, 0.35),
+          0 0 0 0 rgba(13, 110, 253, 0);
+      }
+
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 767px) {
+
+      .topbar .container {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        align-items: center;
+        gap: 8px !important;
+      }
+
+      .phone-info {
+        display: flex !important;
+        flex-direction: column;
+        gap: 2px !important;
+        line-height: 1.4;
+      }
+
+      .phone-info span {
+        white-space: nowrap;
+        font-size: 12px;
+      }
+
+      .phone-info i {
+        font-size: 11px;
+      }
+
+      .address-info {
+        text-align: right;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .address-info i {
+        font-size: 11px;
+      }
+
+      .hide-mobile {
+        display: none !important;
+      }
+    }
+
+
+/* =========================================================
+   MULTIPAGE HTML VERSION
+   Same visual system as the supplied single-page design.
+========================================================= */
+.page-hero {
+  padding: 90px 0 70px;
+  background:
+    radial-gradient(circle at 10% 15%, rgba(25,167,206,.13), transparent 30%),
+    radial-gradient(circle at 90% 80%, rgba(7,91,143,.12), transparent 32%),
+    var(--bg);
+}
+.page-hero h1 { color: var(--navy); }
+[data-theme="dark"] .page-hero h1 { color:#eaf8ff; }
+.page-hero p { color:var(--muted); max-width:800px; line-height:1.9; }
+.page-content { min-height: 55vh; }
+.breadcrumb-wrap { margin-top:18px; }
+.breadcrumb-item a { color:var(--primary); }
+.breadcrumb-item.active { color:var(--muted); }
+.multipage-nav .nav-link.active { color:var(--primary) !important; background:var(--surface-2); }
+@media(max-width:575px){
+  .page-hero { padding:65px 0 50px; }
+  .page-hero h1 { font-size:2.25rem; }
+}
