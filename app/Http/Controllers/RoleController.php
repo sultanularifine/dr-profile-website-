@@ -3,134 +3,175 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
+use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class RoleController extends Controller
 {
-    function __construct()
+    private const PRIVILEGED_ROLE_NAMES = ['Super Admin', 'Admin', 'Doctor', 'Receptionist'];
+
+    public function __construct()
     {
-        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index', 'store']]);
+        $this->middleware('permission:role-list|role-create|role-edit|role-delete', ['only' => ['index']]);
+        $this->middleware('permission:role-list', ['only' => ['show']]);
         $this->middleware('permission:role-create', ['only' => ['create', 'store']]);
         $this->middleware('permission:role-edit', ['only' => ['edit', 'update']]);
         $this->middleware('permission:role-delete', ['only' => ['destroy']]);
     }
 
+    private function isPrivilegedRoleName(string $name): bool
+    {
+        return in_array($name, self::PRIVILEGED_ROLE_NAMES, true);
+    }
+
+    private function guardPrivilegedRoleName(string $name): void
+    {
+        abort_if(
+            $this->isPrivilegedRoleName($name) && !auth()->user()?->hasRole('Super Admin'),
+            403,
+            'Only a Super Admin can create or modify privileged system roles.'
+        );
+    }
+
+    private function guardSuperAdminRoleIsLocked(Role $role): void
+    {
+        abort_if(
+            $role->name === 'Super Admin',
+            403,
+            'The Super Admin role is locked to prevent accidental administrator lockout.'
+        );
+    }
+
+    private function guardSensitivePermissions(array $permissionIds): void
+    {
+        $hasSensitivePermission = Permission::query()
+            ->whereIn('id', $permissionIds)
+            ->where(function ($query) {
+                $query->where('name', 'manage-permissions')
+                    ->orWhere('name', 'like', 'user-%')
+                    ->orWhere('name', 'like', 'role-%');
+            })
+            ->exists();
+
+        abort_if(
+            $hasSensitivePermission && !auth()->user()?->hasRole('Super Admin'),
+            403,
+            'Only a Super Admin can grant user/role administration permissions.'
+        );
+    }
+
     public function index(Request $request): View
     {
-        $roles = Role::orderBy('id', 'DESC')->paginate(5);
+        $roles = Role::query()->orderByDesc('id')->paginate(10)->withQueryString();
 
         return view('roles.index', compact('roles'))
-            ->with('i', ($request->input('page', 1) - 1) * 5);
+            ->with('i', ($request->input('page', 1) - 1) * 10);
     }
 
-   public function create(): View
-{
-    $permission = Permission::all();           // all permissions
-  
-
-    return view('roles.create', compact('permission'));
-}
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    // public function store(Request $request): RedirectResponse
-    // {
-    //     $this->validate($request, [
-    //         'name'       => 'required|unique:roles,name',
-    //         'permission' => 'required',
-    //     ]);
-
-    //     $role = Role::create(['name' => $request->input('name')]);
-
-    //     // Convert IDs → names
-    //     $permissions = Permission::whereIn('id', $request->input('permission'))->pluck('name')->toArray();
-    //     $role->syncPermissions($permissions);
-
-    //     return redirect()->route('roles.index')
-    //         ->with('success', 'Role created successfully');
-    // }
- public function store(Request $request): RedirectResponse
+    public function create(): View
     {
-        $this->validate($request, [
-            'name'       => 'required|unique:roles,name',
-            'permission' => 'nullable|array',          // array expected
-            'permission.*' => 'integer|exists:permissions,id', // each permission ID check
+        $permission = Permission::query()->orderBy('name')->get();
+
+        return view('roles.create', compact('permission'));
+    }
+
+    public function store(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255', 'unique:roles,name'],
+            'permission' => ['nullable', 'array'],
+            'permission.*' => ['integer', 'exists:permissions,id'],
         ]);
 
-        // Create role
-        $role = Role::create(['name' => $request->input('name')]);
+        $this->guardPrivilegedRoleName($data['name']);
+        $permissionIds = $data['permission'] ?? [];
+        $this->guardSensitivePermissions($permissionIds);
 
-        // Assign permissions only if provided
-        if ($request->filled('permission')) {
-            $role->syncPermissions($request->input('permission')); // IDs are enough
-        }
+        $role = DB::transaction(function () use ($data, $permissionIds) {
+            $role = Role::create(['name' => $data['name'], 'guard_name' => 'web']);
+            $permissionNames = Permission::query()
+                ->where('guard_name', 'web')
+                ->whereIn('id', $permissionIds)
+                ->pluck('name')
+                ->all();
+            $role->syncPermissions($permissionNames);
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Role created successfully');
+            return $role;
+        });
+
+        return redirect()->route('roles.index')->with('success', "Role '{$role->name}' created successfully.");
     }
-    /**
-     * Display the specified resource.
-     */
+
     public function show($id): View
     {
-        $role = Role::find($id);
-        $rolePermissions = Permission::join("role_has_permissions", "role_has_permissions.permission_id", "=", "permissions.id")
-            ->where("role_has_permissions.role_id", $id)
-            ->get();
+        $role = Role::query()->findOrFail($id);
+        $rolePermissions = $role->permissions()->orderBy('name')->get();
 
         return view('roles.show', compact('role', 'rolePermissions'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit($id): View
     {
-        $role = Role::find($id);
-        $permission = Permission::get();
-        $rolePermissions = DB::table("role_has_permissions")->where("role_has_permissions.role_id", $id)
-            ->pluck('role_has_permissions.permission_id', 'role_has_permissions.permission_id')
-            ->all();
+        $role = Role::query()->findOrFail($id);
+        $this->guardSuperAdminRoleIsLocked($role);
+        $this->guardPrivilegedRoleName($role->name);
+
+        $permission = Permission::query()->orderBy('name')->get();
+        $rolePermissions = $role->permissions()->pluck('permissions.id', 'permissions.id')->all();
 
         return view('roles.edit', compact('role', 'permission', 'rolePermissions'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, $id): RedirectResponse
     {
-        $this->validate($request, [
-            'name'       => 'required',
-            'permission' => 'required',
+        $role = Role::query()->findOrFail($id);
+        $this->guardSuperAdminRoleIsLocked($role);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('roles', 'name')->ignore($role->id)],
+            'permission' => ['nullable', 'array'],
+            'permission.*' => ['integer', 'exists:permissions,id'],
         ]);
 
-        $role = Role::find($id);
-        $role->name = $request->input('name');
-        $role->save();
+        $this->guardPrivilegedRoleName($role->name);
+        $this->guardPrivilegedRoleName($data['name']);
+        $permissionIds = $data['permission'] ?? [];
+        $this->guardSensitivePermissions($permissionIds);
 
-        // Convert IDs → names
-        $permissions = Permission::whereIn('id', $request->input('permission'))->pluck('name')->toArray();
-        $role->syncPermissions($permissions);
+        DB::transaction(function () use ($role, $data, $permissionIds) {
+            $role->name = $data['name'];
+            $role->save();
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Role updated successfully');
+            $permissionNames = Permission::query()
+                ->where('guard_name', 'web')
+                ->whereIn('id', $permissionIds)
+                ->pluck('name')
+                ->all();
+            $role->syncPermissions($permissionNames);
+        });
+
+        return redirect()->route('roles.index')->with('success', "Role '{$data['name']}' updated successfully.");
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy($id): RedirectResponse
     {
-        DB::table("roles")->where('id', $id)->delete();
+        $role = Role::query()->findOrFail($id);
 
-        return redirect()->route('roles.index')
-            ->with('success', 'Role deleted successfully');
+        if ($this->isPrivilegedRoleName($role->name)) {
+            return redirect()->route('roles.index')->with('error', 'Privileged system roles are protected from deletion.');
+        }
+
+        if (User::role($role->name)->exists()) {
+            return redirect()->route('roles.index')->with('error', 'This role is assigned to one or more accounts. Reassign those accounts before deleting it.');
+        }
+
+        $role->delete();
+
+        return redirect()->route('roles.index')->with('success', "Role '{$role->name}' deleted successfully.");
     }
 }

@@ -3,33 +3,35 @@
 namespace Database\Seeders;
 
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class CreateAdminUserSeeder extends Seeder
 {
     /**
-     * Run the database seeds.
+     * Create the initial super admin only when an administrator explicitly
+     * supplies credentials in the environment. No insecure default password.
      */
     public function run(): void
-
     {
+        $email = trim((string) config('seed_admin.email'));
+        $password = (string) config('seed_admin.password');
+        $name = trim((string) config('seed_admin.name', 'Super Admin')) ?: 'Super Admin';
 
-        $user = User::create([
+        if ($email === '' || $password === '') {
+            $this->command?->warn('Super Admin was not created. Set SEED_ADMIN_EMAIL and SEED_ADMIN_PASSWORD in .env, then run db:seed again.');
+            return;
+        }
 
-            'name' => 'Super Admin',
-            'email' => 'admin@gmail.com',
-            'password' => bcrypt('admin')
+        $role = Role::firstOrCreate(['name' => 'Super Admin', 'guard_name' => 'web']);
+        $role->syncPermissions(Permission::query()->where('guard_name', 'web')->get());
 
-        ]);
-
-
-
-        $role = Role::create(['name' => 'Super Admin']);
-        $permissions = Permission::pluck('id', 'id')->all();
-        $role->syncPermissions($permissions);
-        $user->assignRole([$role->id]);
+        $user = User::firstOrCreate(
+            ['email' => $email],
+            ['name' => $name, 'password' => Hash::make($password)]
+        );
+        $user->assignRole($role);
     }
 }

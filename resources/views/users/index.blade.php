@@ -25,12 +25,18 @@
                     </div>
                 @endif
 
+                @if ($message = Session::get('error'))
+                    <div class="alert alert-warning" role="alert">{{ $message }}</div>
+                @endif
+
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
                             <div class="card-header">
                                 <div class="card-left text-left my-1">
-                                    <a href="{{ route('users.create') }}" class="btn btn-primary">Create New User</a>
+                                    @can('user-create')
+                                        <a href="{{ route('users.create') }}" class="btn btn-primary">Create New User</a>
+                                    @endcan
                                 </div>
                             </div>
 

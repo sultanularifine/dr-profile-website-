@@ -7,6 +7,8 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Schema;
+use Spatie\Permission\Models\Role;
 
 class RegisterController extends Controller
 {
@@ -63,10 +65,18 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
+
+        // Public registration creates a patient account only; it never grants admin access.
+        if (Schema::hasTable('roles') && Schema::hasTable('model_has_roles')) {
+            $patientRole = Role::firstOrCreate(['name' => 'Patient', 'guard_name' => 'web']);
+            $user->assignRole($patientRole);
+        }
+
+        return $user;
     }
 }

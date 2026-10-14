@@ -40,7 +40,7 @@
                         <label>Avatar</label>
                         <input type="file" name="avatar" class="form-control-file">
                         @if($user->avatar)
-                            <img src="{{ asset('uploads/avatars/'.$user->avatar) }}" width="120" class="mt-2">
+                            <img src="{{ str_starts_with($user->avatar, 'avatars/') ? asset('storage/'.$user->avatar) : (str_starts_with($user->avatar, 'uploads/') ? asset($user->avatar) : asset('uploads/avatars/'.$user->avatar)) }}" width="120" class="mt-2 rounded" alt="Current avatar">
                         @endif
                     </div>
 

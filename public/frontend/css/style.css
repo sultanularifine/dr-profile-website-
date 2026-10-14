@@ -715,6 +715,8 @@
       gap: 14px;
       text-align: left;
       color: #fff;
+      font: inherit;
+      text-decoration: none;
       transition: all 0.3s ease;
       cursor: pointer;
     }
@@ -723,6 +725,13 @@
       transform: translateY(-3px);
       background: rgba(255, 255, 255, 0.17);
       border-color: rgba(255, 255, 255, 0.40);
+      color: #fff;
+      text-decoration: none;
+    }
+
+    .appointment-hospital:focus-visible {
+      outline: 3px solid rgba(255, 255, 255, 0.9);
+      outline-offset: 3px;
     }
 
     .hospital-icon {
@@ -1136,4 +1145,13 @@
 @media(max-width:575px){
   .page-hero { padding:65px 0 50px; }
   .page-hero h1 { font-size:2.25rem; }
+}
+
+/* Optional admin-managed logo; the original icon mark remains the fallback. */
+.site-logo-image {
+  display: block;
+  width: auto;
+  max-width: 140px;
+  max-height: 52px;
+  object-fit: contain;
 }

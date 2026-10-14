@@ -1096,6 +1096,13 @@
 
                                 </small>
 
+                                <div class="form-group mt-3">
+                                    <label for="image_alt">Featured image alt text</label>
+                                    <input type="text" id="image_alt" name="image_alt" class="form-control @error('image_alt') is-invalid @enderror" maxlength="255" value="{{ old('image_alt', $blog->image_alt ?: $blog->title) }}" placeholder="Describe the image briefly">
+                                    <small class="form-text text-muted">Used by screen readers and search engines. If left blank, the blog title is used.</small>
+                                    @error('image_alt')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
+
 
                                 @error('image')
 

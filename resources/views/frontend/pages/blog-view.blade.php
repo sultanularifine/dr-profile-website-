@@ -12,16 +12,6 @@
 
 @push('meta')
 
-    <meta
-        name="description"
-        content="{{ $blog->meta_description ?: $blog->excerpt }}"
-    >
-
-    <meta
-        name="robots"
-        content="index, follow"
-    >
-
     <link
         rel="canonical"
         href="{{ $blog->canonical_url ?: url()->current() }}"
@@ -54,9 +44,7 @@
         content="ডা. অমিত হাসান"
     >
 
-    @if($blog->image)
-
-        <meta
+    @if($blog->image)<meta
             property="og:image"
             content="{{ asset($blog->image) }}"
         >
@@ -80,9 +68,7 @@
         content="{{ $blog->og_description ?: ($blog->meta_description ?: $blog->excerpt) }}"
     >
 
-    @if($blog->image)
-
-        <meta
+    @if($blog->image)<meta
             name="twitter:image"
             content="{{ asset($blog->image) }}"
         >
@@ -103,15 +89,15 @@
 
         <div class="blog-breadcrumb">
 
-            <a href="{{ route('home') }}">
+            <a href="{{ route('home') }}">{{ site_content('blog-view.377', '
                 হোম
-            </a>
+            ') }}</a>
 
             <i class="bi bi-chevron-right"></i>
 
-            <a href="{{ route('blog') }}">
+            <a href="{{ route('blog') }}">{{ site_content('blog-view.378', '
                 ব্লগ
-            </a>
+            ') }}</a>
 
             <i class="bi bi-chevron-right"></i>
 
@@ -138,9 +124,7 @@
 
         <div class="blog-single-meta">
 
-            @if($blog->published_at)
-
-                <span>
+            @if($blog->published_at)<span>
 
                     <i class="bi bi-calendar3"></i>
 
@@ -151,9 +135,7 @@
             @endif
 
 
-            @if($blog->read_time)
-
-                <span>
+            @if($blog->read_time)<span>
 
                     <i class="bi bi-clock"></i>
 
@@ -167,11 +149,11 @@
 
             <span>
 
-                <i class="bi bi-person"></i>
+                <i class="bi bi-person"></i>{{ site_content('blog-view.381', '
 
                 ডা. অমিত হাসান
 
-            </span>
+            ') }}</span>
 
         </div>
 
@@ -203,13 +185,11 @@
 
                     {{-- FEATURED IMAGE --}}
 
-                    @if($blog->image)
-
-                        <div class="blog-single-featured">
+                    @if($blog->image)<div class="blog-single-featured">
 
                             <img
                                 src="{{ asset($blog->image) }}"
-                                alt="{{ $blog->title }}"
+                                alt="{{ $blog->image_alt ?: $blog->title }}"
                                 loading="eager"
                                 fetchpriority="high"
                             >
@@ -237,41 +217,37 @@
 
                         <div class="article-intro">
 
-                            <strong>
+                            <strong>{{ site_content('blog-view.383', '
                                 গুরুত্বপূর্ণ তথ্য:
-                            </strong>
+                            ') }}</strong>{{ site_content('blog-view.384', '
 
                             এই লেখাটি সাধারণ স্বাস্থ্য তথ্যের জন্য।
                             ব্যক্তিগত চিকিৎসার ক্ষেত্রে যোগ্য চিকিৎসকের
                             পরামর্শ গ্রহণ করুন।
 
-                        </div>
+                        ') }}</div>
 
 
                         <div class="blog-article-content">
 
                             <div class="blog-content-wrapper">
 
-                                {!! $blog->content !!}
-
-                            </div>
+                                {!! $blog->content !!}</div>
 
                         </div>
 
 
                         {{-- TAGS --}}
 
-                        @if(is_array($blog->tags) && count($blog->tags))
-
-                            <div class="article-tags">
+                        @if(is_array($blog->tags) && count($blog->tags))<div class="article-tags">
 
                                 <span>
 
-                                    <i class="bi bi-tags"></i>
+                                    <i class="bi bi-tags"></i>{{ site_content('blog-view.387', '
 
                                     ট্যাগ:
 
-                                </span>
+                                ') }}</span>
 
 
                                 @foreach($blog->tags as $tag)
@@ -297,9 +273,9 @@
 
                         <div class="article-share">
 
-                            <span>
+                            <span>{{ site_content('blog-view.388', '
                                 শেয়ার করুন:
-                            </span>
+                            ') }}</span>
 
 
                             <button
@@ -357,18 +333,18 @@
 
                     <div>
 
-                        <span>
+                        <span>{{ site_content('blog-view.389', '
                             লেখক
-                        </span>
+                        ') }}</span>
 
-                        <h4>
+                        <h4>{{ site_content('blog-view.390', '
                             ডা. অমিত হাসান
-                        </h4>
+                        ') }}</h4>
 
-                        <p>
+                        <p>{{ site_content('blog-view.391', '
                             শিশু, কিশোর ও নবজাতক বিশেষজ্ঞ
                             এবং শিশু সার্জন।
-                        </p>
+                        ') }}</p>
 
                     </div>
 
@@ -377,19 +353,17 @@
 
                 {{-- RELATED BLOGS --}}
 
-                @if($relatedBlogs->count())
-
-                    <div class="related-blog-section">
+                @if($relatedBlogs->count())<div class="related-blog-section">
 
                         <div class="related-heading">
 
-                            <span>
+                            <span>{{ site_content('blog-view.393', '
                                 RELATED ARTICLES
-                            </span>
+                            ') }}</span>
 
-                            <h2>
+                            <h2>{{ site_content('blog-view.394', '
                                 আরও পড়ুন
-                            </h2>
+                            ') }}</h2>
 
                         </div>
 
@@ -404,11 +378,9 @@
 
                                         <div class="blog-image">
 
-                                            @if($related->image)
-
-                                                <img
+                                            @if($related->image)<img
                                                     src="{{ asset($related->image) }}"
-                                                    alt="{{ $related->title }}"
+                                                    alt="{{ $related->image_alt ?: $related->title }}"
                                                     loading="lazy"
                                                 >
 
@@ -439,9 +411,7 @@
                                             </h3>
 
 
-                                            @if($related->excerpt)
-
-                                                <p>
+                                            @if($related->excerpt)<p>
                                                     {{ \Illuminate\Support\Str::limit($related->excerpt, 120) }}
                                                 </p>
 
@@ -451,11 +421,11 @@
                                             <a
                                                 href="{{ route('blog.view', $related) }}"
                                                 class="blog-read-more"
-                                            >
+                                            >{{ site_content('blog-view.397', '
 
                                                 বিস্তারিত পড়ুন
 
-                                                <i class="bi bi-arrow-right"></i>
+                                                ') }}<i class="bi bi-arrow-right"></i>
 
                                             </a>
 
@@ -490,9 +460,9 @@
 
                     <div class="sidebar-widget">
 
-                        <h4>
+                        <h4>{{ site_content('blog-view.398', '
                             ব্লগ খুঁজুন
-                        </h4>
+                        ') }}</h4>
 
                         <form
                             action="{{ route('blog') }}"
@@ -523,9 +493,9 @@
 
                     <div class="sidebar-widget">
 
-                        <h4>
+                        <h4>{{ site_content('blog-view.399', '
                             ক্যাটাগরি
-                        </h4>
+                        ') }}</h4>
 
                         <ul class="sidebar-category-list">
 
@@ -564,23 +534,23 @@
 
                         </div>
 
-                        <h3>
+                        <h3>{{ site_content('blog-view.400', '
                             পরামর্শের প্রয়োজন?
-                        </h3>
+                        ') }}</h3>
 
-                        <p>
+                        <p>{{ site_content('blog-view.401', '
                             আপনার শিশুর স্বাস্থ্য নিয়ে কোনো প্রশ্ন
                             থাকলে অ্যাপয়েন্টমেন্ট নিতে পারেন।
-                        </p>
+                        ') }}</p>
 
                         <a
                             class="sidebar-appointment-btn"
                             href="{{ route('appointment') }}"
-                        >
+                        >{{ site_content('blog-view.402', '
 
                             অ্যাপয়েন্টমেন্ট নিন
 
-                            <i class="bi bi-arrow-right"></i>
+                            ') }}<i class="bi bi-arrow-right"></i>
 
                         </a>
 
@@ -889,4 +859,13 @@ function fallbackCopy(text)
 
 </style>
 
+@endpush
+
+@push('styles')
+<style>
+/* Final overrides for old theme rules that used fixed heights/padding. */
+.blog-single-section{overflow-x:clip}.blog-single-section>.container{max-width:1200px;width:calc(100% - 32px)}.blog-single-card{width:100%;max-width:100%;min-width:0}.blog-single-featured{height:auto!important;aspect-ratio:1200/630;max-height:520px;min-height:0}.blog-single-featured img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center!important}.blog-article-content,.blog-content-wrapper{min-width:0;max-width:100%;overflow-wrap:anywhere;word-break:normal}.blog-article-content img,.blog-content-wrapper img{max-width:100%!important;height:auto!important}.blog-article-content table,.blog-content-wrapper table{display:block;max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}.blog-article-content iframe,.blog-content-wrapper iframe,.blog-article-content video,.blog-content-wrapper video{max-width:100%!important}.blog-article-content pre,.blog-content-wrapper pre{max-width:100%;overflow-x:auto}.blog-single-hero h1{overflow-wrap:anywhere;word-break:normal}.blog-single-meta span{min-width:0}.article-share,.article-tags,.blog-author-box{flex-wrap:wrap}
+@media(max-width:767px){.blog-single-section>.container{width:calc(100% - 22px)}.blog-single-hero{padding:36px 0 32px!important}.blog-single-hero h1{font-size:clamp(24px,6.4vw,34px)!important;line-height:1.5!important}.blog-single-section{padding:26px 0 38px!important}.blog-single-card{border-radius:14px!important}.blog-single-featured{aspect-ratio:16/9;max-height:none}.blog-article-body{padding:17px 14px!important}.article-intro{padding:13px!important;margin-bottom:22px!important;font-size:13px}.blog-article-content{font-size:15px!important;line-height:1.9!important}.blog-article-content h2,.blog-content-wrapper h2{font-size:23px!important;line-height:1.45}.blog-article-content h3,.blog-content-wrapper h3{font-size:19px!important;line-height:1.45}.blog-single-meta{gap:8px 12px!important;font-size:11px}.blog-breadcrumb{font-size:11px;line-height:1.7;overflow-wrap:anywhere}}
+@media(max-width:420px){.blog-single-section>.container{width:calc(100% - 16px)}.blog-article-body{padding:14px 11px!important}.blog-single-hero h1{font-size:24px!important}.blog-single-meta{align-items:flex-start;flex-direction:column}.related-blog-section .blog-card-body{padding:14px!important}}
+</style>
 @endpush

@@ -1,3 +1,9 @@
+@php
+    $mainPhoneDisplay = trim((string)($adminPublicSettings['public_phone'] ?? '01912-200200'));
+    $secondaryPhoneDisplay = trim((string)($adminPublicSettings['secondary_public_phone'] ?? '01640-167617'));
+    $mainPhoneHref = preg_replace('/[^0-9+]/', '', $mainPhoneDisplay);
+    $secondaryPhoneHref = preg_replace('/[^0-9+]/', '', $secondaryPhoneDisplay);
+@endphp
 <div class="topbar py-2">
     <div class="container d-flex justify-content-between align-items-center gap-3">
 
@@ -6,30 +12,30 @@
 
             <span>
                 <i class="bi bi-telephone me-1"></i>
-                <a href="tel:+8801912200200">
-                    01912-200200
+                <a href="tel:{{ $mainPhoneHref }}">
+                    {{ $mainPhoneDisplay }}
                 </a>
             </span>
 
             <span>
                 <i class="bi bi-telephone me-1"></i>
-                <a href="tel:+8801640167617">
-                    01640-167617
+                <a href="tel:{{ $secondaryPhoneHref }}">
+                    {{ $secondaryPhoneDisplay }}
                 </a>
             </span>
 
             <span class="hide-mobile">
-                <i class="bi bi-clock me-1"></i>
+                <i class="bi bi-clock me-1"></i>{{ site_content('shared_header.628', '
                 রবি–বুধ: সন্ধ্যা ৬টা–রাত ৮টা
-            </span>
+            ') }}</span>
 
         </div>
 
         <!-- Right: Address -->
         <span class="address-info">
-            <i class="bi bi-geo-alt me-1"></i>
+            <i class="bi bi-geo-alt me-1"></i>{{ site_content('shared_header.629', '
             ইসলামী ব্যাংক হাসপাতাল, ঝিনাইদহ।
-        </span>
+        ') }}</span>
 
     </div>
 </div>
@@ -46,16 +52,20 @@
             href="{{ route('home') }}"
         >
 
-            <div class="brand-mark">
-                <i class="bi bi-heart-pulse"></i>
-            </div>
+            @if(!empty($adminPublicSettings['site_logo_image']))
+                <img class="site-logo-image" src="{{ asset('storage/' . $adminPublicSettings['site_logo_image']) }}" alt="{{ $adminPublicSettings['site_logo_alt'] ?? $adminPublicSettings['site_name'] ?? 'Website logo' }}">
+            @else
+                <div class="brand-mark">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+            @endif
 
             <div class="brand-title">
-                <strong>ডা. অমিত হাসান</strong>
+                <strong>{{ site_content('shared_header.630', $adminPublicSettings['site_name'] ?? 'ডা. অমিত হাসান') }}</strong>
 
-                <small class="tagline">
+                <small class="tagline">{{ site_content('shared_header.631', '
                     শিশু ও নবজাতক সার্জন
-                </small>
+                ') }}</small>
             </div>
 
         </a>
@@ -79,9 +89,9 @@
             <a
                 class="btn btn-primary-custom d-none d-sm-inline-block"
                 href="{{ route('appointment') }}"
-            >
+            >{{ site_content('shared_header.632', '
                 অ্যাপয়েন্টমেন্ট
-            </a>
+            ') }}</a>
 
 
             <!-- Mobile Menu -->
@@ -111,9 +121,9 @@
                     <a
                         class="nav-link {{ request()->routeIs('home') ? 'active' : '' }}"
                         href="{{ route('home') }}"
-                    >
+                    >{{ site_content('shared_header.633', '
                         হোম
-                    </a>
+                    ') }}</a>
                 </li>
 
 
@@ -122,9 +132,9 @@
                     <a
                         class="nav-link {{ request()->routeIs('about') ? 'active' : '' }}"
                         href="{{ route('about') }}"
-                    >
+                    >{{ site_content('shared_header.634', '
                         পরিচিতি
-                    </a>
+                    ') }}</a>
                 </li>
 
 
@@ -133,9 +143,9 @@
                     <a
                         class="nav-link {{ request()->routeIs('services') ? 'active' : '' }}"
                         href="{{ route('services') }}"
-                    >
+                    >{{ site_content('shared_header.635', '
                         সেবা
-                    </a>
+                    ') }}</a>
                 </li>
 
 
@@ -144,9 +154,9 @@
                     <a
                         class="nav-link {{ request()->routeIs('blog', 'blog.view') ? 'active' : '' }}"
                         href="{{ route('blog') }}"
-                    >
+                    >{{ site_content('shared_header.636', '
                         ব্লগ
-                    </a>
+                    ') }}</a>
                 </li>
 
 
@@ -155,9 +165,9 @@
                     <a
                         class="nav-link {{ request()->routeIs('faq') ? 'active' : '' }}"
                         href="{{ route('faq') }}"
-                    >
+                    >{{ site_content('shared_header.637', '
                         FAQ
-                    </a>
+                    ') }}</a>
                 </li>
 
 
@@ -166,8 +176,16 @@
                     <a
                         class="nav-link {{ request()->routeIs('contact') ? 'active' : '' }}"
                         href="{{ route('contact') }}"
-                    >
+                    >{{ site_content('shared_header.638', '
                         যোগাযোগ
+                    ') }}</a>
+                </li>
+
+                <!-- Patient Portal -->
+                <li class="nav-item">
+                    <a class="nav-link {{ request()->routeIs('patient.*', 'login', 'register') ? 'active' : '' }}"
+                       href="{{ auth()->check() ? (auth()->user()->hasRole('Patient') ? route('patient.dashboard') : route('dashboard')) : route('login') }}">
+                        {{ auth()->check() ? (auth()->user()->hasRole('Patient') ? 'পেশেন্ট প্যানেল' : 'ড্যাশবোর্ড') : 'পেশেন্ট লগইন' }}
                     </a>
                 </li>
 

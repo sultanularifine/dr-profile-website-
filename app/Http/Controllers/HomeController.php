@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Todo;
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
-    
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    
     public function index()
     {
-        $data = Todo::all(); 
-        return view('backend.dashboard', compact('data'));
+        $user = auth()->user();
+
+        if ($user && $user->hasAnyRole(['Super Admin', 'Doctor', 'Receptionist', 'Admin'])) {
+            return redirect()->route('dashboard');
+        }
+
+        // Unassigned/legacy accounts default to the patient area, not the admin dashboard.
+        return redirect()->route('patient.dashboard');
     }
 }

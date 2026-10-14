@@ -43,6 +43,7 @@ class Blog extends Model
 
         'icon',
         'image',
+        'image_alt',
 
         'excerpt',
 

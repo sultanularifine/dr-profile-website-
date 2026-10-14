@@ -66,6 +66,9 @@ $(document).ready(function() {
             $('#permissionsContainer').html('');
             $('#permissionForm').hide();
             $('#selectAllContainer').hide();
+            $('#protectedRoleNotice').remove();
+            $('#permissionForm button[type=submit]').prop('disabled', false);
+            $('#selectAllBtn').prop('disabled', false);
             return;
         }
 
@@ -78,10 +81,17 @@ $(document).ready(function() {
             success: function(data) {
                 $('#permissionsContainer').html('');
                 $('#permissionForm').show();
+                $('#protectedRoleNotice').remove();
+                if (data.protected) {
+                    $('<div id="protectedRoleNotice" class="alert alert-warning" role="alert"></div>')
+                        .text('Super Admin permissions are locked to prevent accidental loss of administrator access.')
+                        .insertBefore('#permissionForm');
+                }
 
                 if (!data.permissions || data.permissions.length === 0) {
-                    $('#permissionsContainer').html('<p>No permissions available.</p>');
+                    $('#permissionsContainer').text('No permissions available.');
                     $('#selectAllContainer').hide();
+                    $('#permissionForm button[type=submit]').prop('disabled', true);
                     return;
                 }
 
@@ -89,19 +99,21 @@ $(document).ready(function() {
                 $('#selectAllContainer').show();
 
                 $('#permissionForm').attr('action', updatePermissionsUrl.replace(':role', roleId));
+                $('#permissionForm button[type=submit]').prop('disabled', Boolean(data.protected));
+                $('#selectAllBtn').prop('disabled', Boolean(data.protected));
 
                 // Render checkboxes
                 $.each(data.permissions, function(index, permission) {
-                    var isChecked = data.role_permissions.includes(permission.id) ? 'checked' : '';
-                    var html = `
-                        <div class="col-md-6 mb-2">
-                            <div class="form-check">
-                                <input class="form-check-input permission-checkbox" type="checkbox" name="permission[]" value="${permission.id}" id="perm_${permission.id}" ${isChecked}>
-                                <label class="form-check-label" for="perm_${permission.id}">${permission.name}</label>
-                            </div>
-                        </div>
-                    `;
-                    $('#permissionsContainer').append(html);
+                    var isChecked = data.role_permissions.includes(permission.id);
+                    var $wrapper = $('<div>', { class: 'col-md-6 mb-2' });
+                    var $check = $('<input>', {
+                        class: 'form-check-input permission-checkbox', type: 'checkbox',
+                        name: 'permission[]', value: permission.id, id: 'perm_' + permission.id,
+                        checked: isChecked, disabled: Boolean(data.protected)
+                    });
+                    var $label = $('<label>', { class: 'form-check-label', for: 'perm_' + permission.id }).text(permission.name);
+                    $wrapper.append($('<div>', { class: 'form-check' }).append($check, $label));
+                    $('#permissionsContainer').append($wrapper);
                 });
 
                 // Update button text based on current selection
@@ -132,6 +144,9 @@ $(document).ready(function() {
     function updateSelectAllBtnText() {
         if ($('.permission-checkbox').length === 0) {
             $('#selectAllContainer').hide();
+            $('#protectedRoleNotice').remove();
+            $('#permissionForm button[type=submit]').prop('disabled', false);
+            $('#selectAllBtn').prop('disabled', false);
             return;
         }
         var allChecked = $('.permission-checkbox:checked').length === $('.permission-checkbox').length;

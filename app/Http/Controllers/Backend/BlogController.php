@@ -10,6 +10,31 @@ use Illuminate\Support\Str;
 
 class BlogController extends Controller
 {
+    /** Delete only files created by this blog uploader; never trust paths read from a DB row. */
+    private function deleteManagedBlogImage(?string $relativePath): void
+    {
+        if (!$relativePath || !str_starts_with($relativePath, 'frontend/images/blog/')) {
+            return;
+        }
+
+        $filename = basename($relativePath);
+        if ($filename !== '' && !in_array($filename, ['.', '..'], true)) {
+            $absolutePath = public_path('frontend/images/blog/' . $filename);
+            if (File::exists($absolutePath) && is_file($absolutePath)) {
+                File::delete($absolutePath);
+            }
+        }
+    }
+
+    public function __construct()
+    {
+        $this->middleware('permission:blog-list|blog-create|blog-edit|blog-delete', ['only' => ['index']]);
+        $this->middleware('permission:blog-list', ['only' => ['show']]);
+        $this->middleware('permission:blog-create', ['only' => ['create', 'store']]);
+        $this->middleware('permission:blog-edit', ['only' => ['edit', 'update']]);
+        $this->middleware('permission:blog-delete', ['only' => ['destroy']]);
+    }
+
     /*
     |--------------------------------------------------------------------------
     | INDEX
@@ -95,6 +120,12 @@ class BlogController extends Controller
                 'image',
                 'mimes:jpg,jpeg,png,webp',
                 'max:2048'
+            ],
+
+            'image_alt' => [
+                'nullable',
+                'string',
+                'max:255'
             ],
 
             'excerpt' => [
@@ -256,6 +287,10 @@ class BlogController extends Controller
                 $validated['excerpt'] ?? '';
         }
 
+        if (empty($validated['image_alt'])) {
+            $validated['image_alt'] = $validated['title'];
+        }
+
 
         if (
             empty($validated['og_title'])
@@ -305,12 +340,7 @@ class BlogController extends Controller
             }
 
 
-            $imageName =
-                time() .
-                '_' .
-                Str::random(10) .
-                '.' .
-                $image->getClientOriginalExtension();
+            $imageName = Str::uuid()->toString() . '.' . $image->extension();
 
 
             $image->move(
@@ -474,6 +504,12 @@ class BlogController extends Controller
                 'image',
                 'mimes:jpg,jpeg,png,webp',
                 'max:2048'
+            ],
+
+            'image_alt' => [
+                'nullable',
+                'string',
+                'max:255'
             ],
 
             'excerpt' => [
@@ -644,6 +680,10 @@ class BlogController extends Controller
                 $validated['excerpt'] ?? '';
         }
 
+        if (empty($validated['image_alt'])) {
+            $validated['image_alt'] = $validated['title'];
+        }
+
 
         if (
             empty($validated['og_title'])
@@ -693,12 +733,7 @@ class BlogController extends Controller
             }
 
 
-            $imageName =
-                time() .
-                '_' .
-                Str::random(10) .
-                '.' .
-                $image->getClientOriginalExtension();
+            $imageName = Str::uuid()->toString() . '.' . $image->extension();
 
 
             $image->move(
@@ -725,17 +760,7 @@ class BlogController extends Controller
             );
 
 
-            if (
-                !empty($oldImage) &&
-                File::exists(
-                    public_path($oldImage)
-                )
-            ) {
-
-                File::delete(
-                    public_path($oldImage)
-                );
-            }
+            $this->deleteManagedBlogImage($oldImage);
         } else {
 
             if (
@@ -773,21 +798,7 @@ class BlogController extends Controller
 
     public function destroy(Blog $blog)
     {
-        if (
-            !empty($blog->image) &&
-            File::exists(
-                public_path(
-                    $blog->image
-                )
-            )
-        ) {
-
-            File::delete(
-                public_path(
-                    $blog->image
-                )
-            );
-        }
+        $this->deleteManagedBlogImage($blog->image);
 
 
         $blog->delete();

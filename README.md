@@ -1,3 +1,11 @@
+# Doctor Website Admin & Patient Portal Upgrade
+
+For the verified feature audit, local setup commands, migration notes, PDF installation, security notes, and known limitations, read [`docs/FEATURE_AUDIT_AND_SETUP.md`](docs/FEATURE_AUDIT_AND_SETUP.md).
+
+This upgrade preserves the existing Laravel/Blade frontend and admin template. Back up your project and database before merging files or running migrations; never replace your existing `.env` or `APP_KEY`.
+
+---
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">

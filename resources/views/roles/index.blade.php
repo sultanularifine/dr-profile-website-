@@ -25,6 +25,10 @@
                 </div>
             @endif
 
+            @if ($message = Session::get('error'))
+                <div class="alert alert-warning" role="alert">{{ $message }}</div>
+            @endif
+
             <div class="row">
                 <div class="col-12">
                     <div class="card">
@@ -52,7 +56,9 @@
                                                 <td></td> <!-- Serial number will be handled by DataTables -->
                                                 <td>{{ $role->name }}</td>
                                                 <td class="d-flex">
-                                                    <a class="btn btn-info btn-sm mr-1" href="{{ route('roles.show',$role->id) }}" title="Show"><i class="fa-solid fa-eye"></i></a>
+                                                    @can('role-list')
+                                                        <a class="btn btn-info btn-sm mr-1" href="{{ route('roles.show',$role->id) }}" title="Show"><i class="fa-solid fa-eye"></i></a>
+                                                    @endcan
 
                                                     @can('role-edit')
                                                         <a class="btn btn-primary btn-sm mr-1" href="{{ route('roles.edit',$role->id) }}" title="Edit"><i class="fas fa-pencil-alt"></i></a>

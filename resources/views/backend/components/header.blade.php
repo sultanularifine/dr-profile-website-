@@ -15,11 +15,19 @@
         </ul>
     </form>
 
+    @php
+        $currentAvatar = Auth::user()->avatar ?? null;
+        $currentAvatarUrl = !$currentAvatar
+            ? asset('img/avatar/avatar-1.png')
+            : (str_starts_with($currentAvatar, 'avatars/')
+                ? asset('storage/' . $currentAvatar)
+                : (str_starts_with($currentAvatar, 'uploads/') ? asset($currentAvatar) : asset('uploads/avatars/' . $currentAvatar)));
+    @endphp
     <ul class="navbar-nav navbar-right">
         <li class="dropdown">
             <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle nav-link-lg nav-link-user">
                 <img alt="image"
-                    src="{{ Auth::user()->avatar ? asset('uploads/avatars/' . Auth::user()->avatar) : asset('img/avatar/avatar-1.png') }}"
+                    src="{{ $currentAvatarUrl }}"
                     class="rounded-circle mr-1">
                 <div class="d-sm-none d-lg-inline-block">
                     Hi, {{ Auth::user()->name }}

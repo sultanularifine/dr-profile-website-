@@ -805,6 +805,11 @@
 
                             <div class="card-body">
 
+                                <button type="button" class="btn btn-outline-primary btn-block mb-3" data-toggle="modal" data-target="#blogFeatureMakerModal" id="open-feature-image-maker" title="নিজের ছবি ও ব্লগের শিরোনাম দিয়ে 1200×630 feature image বানান; তৈরি হলে ফর্মে যুক্ত হবে।">
+                                    <i class="fas fa-magic mr-1"></i> Feature Image Maker খুলুন
+                                </button>
+                                <div class="small text-muted mb-3">এই টুল দিয়ে বানানো ছবি স্বয়ংক্রিয়ভাবে নিচের Featured Image upload field-এ বসবে। এরপর ব্লগ Save করুন।</div>
+
                                 <input
                                     type="file"
                                     name="image"
@@ -817,6 +822,13 @@
                                     JPG, JPEG, PNG অথবা WEBP<br>
                                     Maximum: 2MB
                                 </small>
+
+                                <div class="form-group mt-3">
+                                    <label for="image_alt">Featured image alt text</label>
+                                    <input type="text" id="image_alt" name="image_alt" class="form-control @error('image_alt') is-invalid @enderror" maxlength="255" value="{{ old('image_alt') }}" placeholder="Describe the image briefly">
+                                    <small class="form-text text-muted">Used by screen readers and search engines. If left blank, the blog title is used.</small>
+                                    @error('image_alt')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                </div>
 
                                 @error('image')
                                     <div class="text-danger small mt-2">
@@ -929,6 +941,20 @@
                 </div>
 
             </form>
+
+
+            <div class="modal fade" id="blogFeatureMakerModal" tabindex="-1" role="dialog" aria-labelledby="blogFeatureMakerModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered blog-feature-maker-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <div><h5 class="modal-title" id="blogFeatureMakerModalLabel"><i class="fas fa-magic text-primary mr-2"></i>Blog Feature Image Maker</h5><small class="text-muted">ছবি তৈরি করে “এই ছবিটি ব্লগে ব্যবহার করুন” চাপুন</small></div>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="বন্ধ করুন"><span aria-hidden="true">&times;</span></button>
+                        </div>
+                        <div class="modal-body p-0"><div id="blog-feature-maker-loading" class="p-4 text-center" role="status">Feature Image Maker লোড হচ্ছে…</div><iframe id="blog-feature-maker-frame" title="Blog Feature Image Maker" src="{{ asset('admin/feature-image-maker.html') }}"></iframe></div>
+                        <div class="modal-footer"><span class="small text-muted mr-auto" id="blog-feature-maker-status" role="status">ছবি তৈরি হলে Blog Form-এর Featured Image-এ সেট হবে।</span><a class="btn btn-outline-primary" id="blog-feature-maker-new-tab" href="{{ asset('admin/feature-image-maker.html') }}" target="_blank" rel="noopener">নতুন ট্যাবে খুলুন</a><button type="button" class="btn btn-secondary" data-dismiss="modal">বন্ধ করুন</button></div>
+                    </div>
+                </div>
+            </div>
 
         </div>
 
@@ -1869,4 +1895,153 @@ document.addEventListener('DOMContentLoaded', function () {
 
 </script>
 
+@endpush
+
+@push('styles')
+<style>
+/* Keep the feature maker above the entire admin shell/sidebar. The modal is moved directly under body by the bridge below. */
+body.feature-maker-modal-open > .modal-backdrop{z-index:200000!important}
+body.feature-maker-modal-open > #blogFeatureMakerModal{position:fixed!important;inset:0!important;z-index:200010!important;width:100vw!important;max-width:none!important;height:100vh;height:100dvh;max-height:none!important;margin:0!important;padding:0!important;overflow-x:hidden!important;overflow-y:auto!important}
+#blogFeatureMakerModal .blog-feature-maker-dialog{width:min(calc(100vw - 32px),1180px);max-width:1180px;margin:1rem auto}
+#blogFeatureMakerModal .modal-content{display:flex;flex-direction:column;height:min(92vh,900px);height:min(92dvh,900px);min-height:260px;max-height:none;border:0;border-radius:16px;overflow:hidden;box-shadow:0 20px 80px rgba(0,0,0,.25)}
+#blogFeatureMakerModal .modal-header,#blogFeatureMakerModal .modal-footer{flex:0 0 auto;padding:12px 16px;align-items:center}
+#blogFeatureMakerModal .modal-title{font-size:16px;font-weight:800}
+#blogFeatureMakerModal .modal-header small{font-size:11px}
+#blogFeatureMakerModal .modal-body{position:relative;min-height:0;flex:1 1 auto;overflow:hidden;padding:0!important}
+#blogFeatureMakerModal iframe{position:absolute;inset:0;display:block;width:100%;height:100%;min-height:0;border:0;background:#f3f8fb}
+#blogFeatureMakerModal #blog-feature-maker-loading{position:absolute;z-index:1;inset:0 auto auto 0;width:100%;pointer-events:none;background:rgba(243,248,251,.94);color:#0b2a3d;font-weight:700}
+#blogFeatureMakerModal .modal-footer{gap:8px;flex-wrap:wrap}
+#blogFeatureMakerModal #blog-feature-maker-status{overflow-wrap:anywhere;flex:1 1 240px}
+#blogFeatureMakerModal #blog-feature-maker-new-tab{white-space:nowrap}
+@media(max-width:575px){
+ body.feature-maker-modal-open > #blogFeatureMakerModal{padding:0!important}
+ #blogFeatureMakerModal .blog-feature-maker-dialog{width:100vw;max-width:none;height:100%;margin:0}
+ #blogFeatureMakerModal .modal-content{height:100vh;height:100dvh;min-height:0;border-radius:0}
+ #blogFeatureMakerModal .modal-header{padding:10px 12px}
+ #blogFeatureMakerModal .modal-footer{align-items:stretch;flex-direction:column}
+ #blogFeatureMakerModal .modal-footer .btn,#blogFeatureMakerModal #blog-feature-maker-new-tab{width:100%;text-align:center}
+ #blogFeatureMakerModal #blog-feature-maker-status{flex-basis:auto}
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+(function () {
+    function initBlogFeatureMakerBridge() {
+        var modal = document.getElementById('blogFeatureMakerModal');
+        var frame = document.getElementById('blog-feature-maker-frame');
+        var titleInput = document.getElementById('title');
+        var fileInput = document.getElementById('featured-image');
+        var preview = document.getElementById('image-preview');
+        var previewWrapper = document.getElementById('image-preview-wrapper');
+        var status = document.getElementById('blog-feature-maker-status');
+        var loading = document.getElementById('blog-feature-maker-loading');
+        var altInput = document.getElementById('image_alt');
+        if (!modal || !frame || !fileInput) return;
+
+        // Important: this view lives inside .main-content (which is shifted right by the admin sidebar
+        // and may create a containing block). Move the modal to body so position:fixed covers the viewport,
+        // instead of starting beside/behind the sidebar.
+        if (modal.parentElement !== document.body) {
+            document.body.appendChild(modal);
+        }
+
+        var frameReady = false;
+        function sendTitle() {
+            if (!frameReady || !frame.contentWindow) return;
+            try {
+                frame.contentWindow.postMessage({
+                    type: 'blog-feature-image-maker:set-title',
+                    title: titleInput ? titleInput.value : ''
+                }, window.location.origin);
+            } catch (error) {
+                if (status) status.textContent = 'ব্লগের শিরোনাম পাঠানো যায়নি। নতুন ট্যাবে খুলে চেষ্টা করুন।';
+            }
+        }
+
+        function checkFrameReady() {
+            // The iframe may finish loading before this code registers its load listener.
+            // Checking immediately prevents the loader overlay from hiding a ready generator.
+            try {
+                frameReady = !!(frame.contentDocument && frame.contentDocument.getElementById('cv'));
+            } catch (error) {
+                frameReady = false;
+            }
+            if (frameReady) {
+                if (loading) loading.style.display = 'none';
+                if (status) status.textContent = 'টুল প্রস্তুত। ছবি তৈরি করে “এই ছবিটি ব্লগে ব্যবহার করুন” চাপুন।';
+                sendTitle();
+                return true;
+            }
+            return false;
+        }
+        frame.addEventListener('load', function () {
+            if (checkFrameReady()) return;
+            if (loading) loading.style.display = 'none';
+            if (status) status.textContent = 'Feature Image Maker ফাইলটি লোড হয়নি। নতুন ট্যাবে খুলুন অথবা public/admin/feature-image-maker.html ফাইলটি আছে কি না দেখুন।';
+        });
+        // Detect already-loaded iframe and show a useful fallback rather than leaving a stuck loader.
+        if (!checkFrameReady()) {
+            window.setTimeout(function () {
+                if (checkFrameReady()) return;
+                if (loading) loading.style.display = 'none';
+                if (status) status.textContent = 'Feature Image Maker এখনও লোড হয়নি। নতুন ট্যাবে খুলুন বা public/admin/feature-image-maker.html ফাইলটি চেক করুন।';
+            }, 3000);
+        }
+
+        if (window.jQuery) {
+            window.jQuery(modal).on('show.bs.modal', function () {
+                // Raise both modal and its Bootstrap backdrop above sidebar/topbar z-indexes.
+                document.body.classList.add('feature-maker-modal-open');
+                if (loading) loading.style.display = frameReady ? 'none' : 'block';
+                if (status && !frameReady) status.textContent = 'Feature Image Maker লোড হচ্ছে…';
+            });
+            window.jQuery(modal).on('shown.bs.modal', sendTitle);
+            window.jQuery(modal).on('hidden.bs.modal', function () {
+                document.body.classList.remove('feature-maker-modal-open');
+            });
+        }
+
+        window.addEventListener('message', function (event) {
+            if (event.origin !== window.location.origin || !event.data || event.data.type !== 'blog-feature-image-maker:result') return;
+            if (typeof event.data.dataUrl !== 'string' || !/^data:image\/(webp|png|jpeg);base64,/i.test(event.data.dataUrl)) {
+                if (status) status.textContent = 'ইমেজ format যাচাই করা যায়নি। আবার তৈরি করুন।';
+                return;
+            }
+            if (status) status.textContent = 'ছবি Blog Form-এ যুক্ত হচ্ছে…';
+            // Decode directly instead of fetch(data:), which behaves inconsistently in some browsers.
+            try {
+                var parts = event.data.dataUrl.split(',');
+                var mimeMatch = parts[0].match(/^data:(.*?);base64$/i);
+                if (!mimeMatch) throw new Error('Image data is invalid');
+                var binary = atob(parts[1]);
+                var bytes = new Uint8Array(binary.length);
+                for (var i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                var blob = new Blob([bytes], { type: mimeMatch[1].toLowerCase() });
+                if (!['image/webp', 'image/png', 'image/jpeg'].includes(blob.type)) throw new Error('Unsupported image format');
+                if (blob.size > 2 * 1024 * 1024) throw new Error('ইমেজ 2MB-এর বেশি। আবার তৈরি করুন।');
+                if (typeof DataTransfer === 'undefined' || typeof File === 'undefined') throw new Error('এই ব্রাউজারে সরাসরি upload field-এ ছবি বসানো যায় না। ছবিটি ডাউনলোড করে Featured Image upload করুন।');
+                var extension = blob.type === 'image/webp' ? 'webp' : (blob.type === 'image/png' ? 'png' : 'jpg');
+                var file = new File([blob], 'blog-feature-image.' + extension, { type: blob.type, lastModified: Date.now() });
+                var transfer = new DataTransfer();
+                transfer.items.add(file);
+                fileInput.files = transfer.files;
+                if (preview) preview.src = URL.createObjectURL(blob);
+                if (previewWrapper) previewWrapper.style.display = 'block';
+                if (altInput && !altInput.value.trim() && titleInput) altInput.value = titleInput.value.trim();
+                if (status) status.textContent = 'ছবি সফলভাবে Blog Form-এ যুক্ত হয়েছে। Modal বন্ধ করে Preview দেখে তারপর Save Blog চাপুন।';
+                if (window.jQuery) window.jQuery(modal).modal('hide');
+            } catch (error) {
+                if (status) status.textContent = error && error.message ? error.message : 'ছবি ফর্মে যুক্ত করা যায়নি। নতুন ট্যাবে খুলুন বা manual upload করুন।';
+            }
+        });
+    }
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initBlogFeatureMakerBridge, { once: true });
+    } else {
+        initBlogFeatureMakerBridge();
+    }
+})();
+</script>
 @endpush

@@ -97,16 +97,16 @@
 
                 <strong>
                     "{{ request('search') }}"
-                </strong>
+                </strong>{{ site_content('blog.364', '
 
                 এর জন্য অনুসন্ধানের ফলাফল
 
-                <a
+                ') }}<a
                     href="{{ route('blog') }}"
                     class="ms-2"
-                >
+                >{{ site_content('blog.365', '
                     × Clear
-                </a>
+                ') }}</a>
 
             </div>
 
@@ -129,11 +129,9 @@
 
                         <div class="blog-image">
 
-                            @if($blog->image)
-
-                                <img
+                            @if($blog->image)<img
                                     src="{{ asset($blog->image) }}"
-                                    alt="{{ $blog->title }}"
+                                    alt="{{ $blog->image_alt ?: $blog->title }}"
                                     class="img-fluid"
                                     loading="lazy"
                                 >
@@ -164,9 +162,7 @@
 
                             <div class="blog-meta">
 
-                                @if($blog->published_at)
-
-                                    <span>
+                                @if($blog->published_at)<span>
 
                                         <i class="bi bi-calendar3"></i>
 
@@ -177,9 +173,7 @@
                                 @endif
 
 
-                                @if($blog->read_time)
-
-                                    <span>
+                                @if($blog->read_time)<span>
 
                                         <i class="bi bi-clock"></i>
 
@@ -197,9 +191,7 @@
                             </h3>
 
 
-                            @if($blog->excerpt)
-
-                                <p>
+                            @if($blog->excerpt)<p>
                                     {{ $blog->excerpt }}
                                 </p>
 
@@ -209,11 +201,11 @@
                             <a
                                 href="{{ route('blog.view', $blog) }}"
                                 class="blog-read-more"
-                            >
+                            >{{ site_content('blog.370', '
 
                                 বিস্তারিত পড়ুন
 
-                                <i class="bi bi-arrow-right"></i>
+                                ') }}<i class="bi bi-arrow-right"></i>
 
                             </a>
 
@@ -234,20 +226,20 @@
                             style="font-size: 50px;"
                         ></i>
 
-                        <h3 class="mt-3">
+                        <h3 class="mt-3">{{ site_content('blog.371', '
                             কোনো ব্লগ পাওয়া যায়নি।
-                        </h3>
+                        ') }}</h3>
 
-                        <p>
+                        <p>{{ site_content('blog.372', '
                             অন্য কোনো শব্দ দিয়ে আবার চেষ্টা করুন।
-                        </p>
+                        ') }}</p>
 
                         <a
                             href="{{ route('blog') }}"
                             class="btn btn-primary"
-                        >
+                        >{{ site_content('blog.373', '
                             সব ব্লগ দেখুন
-                        </a>
+                        ') }}</a>
 
                     </div>
 
@@ -262,9 +254,7 @@
             Pagination
         ========================== --}}
 
-        @if($blogs->hasPages())
-
-            <div class="mt-5">
+        @if($blogs->hasPages())<div class="mt-5">
 
                 {{ $blogs->onEachSide(1)->links() }}
 
